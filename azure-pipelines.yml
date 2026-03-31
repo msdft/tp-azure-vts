@@ -26,7 +26,7 @@ steps:
   - task: AzureWebApp@1
     displayName: 'Déployer sur App Service'
     inputs:
-      azureSubscription: 'SC_TP'
+      azureSubscription: 'SC_EXAM-AZURE'
       appType: 'webAppLinux'
       appName: 'backend-tp-azure-vts'
       runtimeStack: 'NODE|20-lts'
