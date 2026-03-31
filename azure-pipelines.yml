@@ -4,9 +4,7 @@
 # https://aka.ms/yaml
 
 trigger:
-  branches:
-    include:
-      - main
+- main
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -28,7 +26,7 @@ steps:
   - task: AzureWebApp@1
     displayName: 'Déployer sur App Service'
     inputs:
-      azureSubscription: 'SC_ARM_TP'
+      azureSubscription: 'SC_TP'
       appType: 'webAppLinux'
       appName: 'backend-tp-azure-vts'
       runtimeStack: 'NODE|20-lts'
