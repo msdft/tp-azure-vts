@@ -10,25 +10,21 @@ pool:
   name: 'PoolLocalWindows'
 
 steps:
-  - checkout: self
+- checkout: self
 
-  - script: npm install
-    displayName: 'Installer les dépendances'
+- script: npm install
+  displayName: 'Installer les dépendances'
 
-  - script: npm test
-    displayName: 'Lancer les tests'
+- script: npm test
+  displayName: 'Lancer les tests'
 
-  - task: AzureCLI@2
-    displayName: 'Déployer sur App Service'
-    inputs:
-      azureSubscription: 'SC_EXAM-AZURE'
-      scriptType: 'ps'
-      scriptLocation: 'inlineScript'
-      inlineScript: |
-        cd $(Build.SourcesDirectory)
-        zip -r app.zip . -x "*.git*"
-        az webapp deploy \
-          --resource-group rg-tp-azure-exam \
-          --name backend-tp-azure-vts \
-          --src-path app.zip \
-          --type zip
+- task: AzureCLI@2
+  displayName: 'Déployer sur App Service'
+  inputs:
+    azureSubscription: 'SC_EXAM-AZURE'
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      cd $(Build.SourcesDirectory)
+      Compress-Archive -Path * -DestinationPath app.zip -Force
+      az webapp deploy --resource-group rg-tp-azure-exam --name backend-tp-azure-vts --src-path app.zip --type zip
