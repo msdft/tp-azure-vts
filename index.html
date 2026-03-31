@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Task - Simple</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0d1117',
+                        cardbg: '#161b22',
+                        neonpink: '#ff3e72',
+                        neonteal: '#4fd1c5'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body class="bg-darkbg text-white font-sans min-h-screen p-8">
+
+    <div id="app" class="max-w-2xl mx-auto">
+        
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold tracking-wider mb-2">
+                <span class="text-neonpink">FOCUS</span> TASK
+            </h1>
+            <p class="text-gray-400 text-sm">Minimalist Full Stack</p>
+        </div>
+
+        <div class="bg-cardbg p-4 rounded-xl border border-gray-800 flex gap-4 mb-8 shadow-lg shadow-neonpink/10">
+            <input 
+                v-model="newTaskText" 
+                @keyup.enter="addTask"
+                type="text" 
+                placeholder="Entrez une nouvelle tâche..." 
+                class="flex-1 bg-transparent border-none outline-none text-lg text-gray-200"
+            >
+            <button 
+                @click="addTask" 
+                class="bg-neonpink text-white px-6 py-2 rounded-lg font-bold hover:bg-white hover:text-neonpink transition-all duration-300"
+            >
+                Ajouter
+            </button>
+        </div>
+
+        <div class="space-y-4">
+            <div v-if="tasks.length === 0" class="text-center text-gray-600 mt-10">
+                Aucune tâche pour le moment.
+            </div>
+
+            <div 
+                v-for="task in tasks" :key="task.id"
+                class="bg-cardbg p-5 rounded-xl border border-gray-800 flex items-center justify-between group transition-all duration-300 hover:border-gray-600"
+                :class="{ 'border-green-900 opacity-50': task.completed }"
+            >
+                <div class="flex items-center gap-4">
+                    <button 
+                        @click="toggleTask(task)"
+                        class="w-6 h-6 rounded border-2 border-gray-600 flex items-center justify-center transition-colors"
+                        :class="task.completed ? 'bg-neonteal border-neonteal' : 'hover:border-neonteal'"
+                    >
+                        <span v-if="task.completed" class="text-darkbg font-bold">✓</span>
+                    </button>
+                    
+                    <span class="text-lg" :class="{ 'line-through text-gray-500': task.completed }">
+                        {{ task.text }}
+                    </span>
+                </div>
+
+                <button 
+                    @click="deleteTask(task.id)"
+                    class="text-gray-600 hover:text-red-500 font-bold px-3 py-1 rounded hover:bg-gray-800 transition-colors opacity-0 group-hover:opacity-100"
+                >
+                    X
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const tasks = ref([]);
+                const newTaskText = ref('');
+                const API_URL = 'http://localhost:5000/api/tasks';
+
+                // Charger les tâches depuis le backend
+                const loadTasks = async () => {
+                    try {
+                        const response = await fetch(API_URL);
+                        tasks.value = await response.json();
+                    } catch (error) {
+                        console.error("Le backend n'est pas lancé !", error);
+                    }
+                };
+
+                // Ajouter une tâche
+                const addTask = async () => {
+                    if (newTaskText.value.trim() === '') return;
+                    
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: newTaskText.value })
+                    });
+                    
+                    const newTask = await response.json();
+                    tasks.value.push(newTask);
+                    newTaskText.value = ''; // On vide le champ
+                };
+
+                // Cocher/Décocher
+                const toggleTask = async (task) => {
+                    await fetch(`${API_URL}/${task.id}`, { method: 'PUT' });
+                    task.completed = !task.completed;
+                };
+
+                // Supprimer
+                const deleteTask = async (id) => {
+                    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                    tasks.value = tasks.value.filter(t => t.id !== id);
+                };
+
+                // On charge les tâches au démarrage de la page
+                onMounted(() => {
+                    loadTasks();
+                });
+
+                return { tasks, newTaskText, addTask, toggleTask, deleteTask };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

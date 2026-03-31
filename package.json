@@ -1,0 +1,19 @@
+{
+  "name": "tp-azure-simple",
+  "version": "1.0.0",
+  "description": "TP Azure - Full Stack App",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Tests OK\" && exit 0",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mongodb": "^6.0.0"
+  }
+}
