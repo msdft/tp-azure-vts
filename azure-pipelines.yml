@@ -25,6 +25,7 @@ steps:
     scriptType: 'ps'
     scriptLocation: 'inlineScript'
     inlineScript: |
+      inlineScript: |
       cd $(Build.SourcesDirectory)
-      Compress-Archive -Path * -DestinationPath app.zip -Force
+      Compress-Archive -Path server.js, package.json, index.html -DestinationPath app.zip -Force
       az webapp deploy --resource-group rg-tp-azure-exam --name backend-tp-azure-vts --src-path app.zip --type zip
