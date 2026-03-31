@@ -12,21 +12,23 @@ pool:
 steps:
   - checkout: self
 
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '20.x'
-    displayName: 'Installer Node.js'
-
   - script: npm install
     displayName: 'Installer les dépendances'
 
   - script: npm test
     displayName: 'Lancer les tests'
 
-  - task: AzureWebApp@1
+  - task: AzureCLI@2
     displayName: 'Déployer sur App Service'
     inputs:
       azureSubscription: 'SC_EXAM-AZURE'
-      appType: 'webAppLinux'
-      appName: 'backend-tp-azure-vts'
-      runtimeStack: 'NODE|20-lts'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        cd $(Build.SourcesDirectory)
+        zip -r app.zip . -x "*.git*"
+        az webapp deploy \
+          --resource-group rg-tp-azure-exam \
+          --name backend-tp-azure-vts \
+          --src-path app.zip \
+          --type zip
