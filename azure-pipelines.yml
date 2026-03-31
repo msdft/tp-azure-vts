@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'PoolLocalWindows'
+  name: 'PoolLocalWindows'
 
 steps:
   - checkout: self
