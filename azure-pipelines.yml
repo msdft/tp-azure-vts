@@ -22,7 +22,7 @@ steps:
     displayName: 'Déployer sur App Service'
     inputs:
       azureSubscription: 'SC_EXAM-AZURE'
-      scriptType: 'bash'
+      scriptType: 'ps'
       scriptLocation: 'inlineScript'
       inlineScript: |
         cd $(Build.SourcesDirectory)
