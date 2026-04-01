@@ -20,4 +20,4 @@ steps:
     scriptType: 'ps'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      az webapp up --name backend-tp-azure-vts --resource-group rg-tp-azure-exam --runtime "NODE:20-lts"
+      az webapp up --name backend-tp-azure-vts --resource-group rg-tp-azure-exam --runtime "NODE:20-lts" --location canadaeast
