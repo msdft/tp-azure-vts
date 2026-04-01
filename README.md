@@ -1,4 +1,4 @@
 tp-azure-simple/
-├── server.js        <-- Ton back-end (API)
+├── server.js        <-- back-end (API)
 ├── package.json     <-- Pour installer express
-└── index.html       <-- Ton front-end COMPLET (HTML, CSS, Vue.js)
+└── index.html       <-- front-end COMPLET (HTML, CSS, Vue.js)
