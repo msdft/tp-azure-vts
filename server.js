@@ -1,13 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const { MongoClient } = require('mongodb');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connexion MongoDB via variable d'environnement (jamais en dur !)
 const MONGODB_URI = process.env.MONGODB_URI;
 let db;
 
@@ -17,10 +15,6 @@ MongoClient.connect(MONGODB_URI)
     console.log('✅ Connecté à Cosmos DB');
   })
   .catch(err => console.error('❌ Erreur connexion MongoDB:', err));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
 
 app.get('/api/tasks', async (req, res) => {
   const tasks = await db.collection('tasks').find().toArray();
@@ -53,7 +47,6 @@ app.delete('/api/tasks/:id', async (req, res) => {
   res.json({ success: true });
 });
 
-// PORT dynamique pour Azure App Service
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Serveur démarré sur le port ${PORT}`);
