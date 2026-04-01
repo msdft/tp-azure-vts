@@ -58,7 +58,7 @@
             </div>
 
             <div 
-                v-for="task in tasks" :key="task.id"
+                v-for="task in tasks" :key="task._id"
                 class="bg-cardbg p-5 rounded-xl border border-gray-800 flex items-center justify-between group transition-all duration-300 hover:border-gray-600"
                 :class="{ 'border-green-900 opacity-50': task.completed }"
             >
@@ -77,7 +77,7 @@
                 </div>
 
                 <button 
-                    @click="deleteTask(task.id)"
+                    @click="deleteTask(task._id)"
                     class="text-gray-600 hover:text-red-500 font-bold px-3 py-1 rounded hover:bg-gray-800 transition-colors opacity-0 group-hover:opacity-100"
                 >
                     X
@@ -94,9 +94,8 @@
             setup() {
                 const tasks = ref([]);
                 const newTaskText = ref('');
-                const API_URL = 'https://backend-tp-azure-vts-b0ayaqeeathch8as.canadaeast-01.azurewebsites.net'
+                const API_URL = 'https://backend-tp-azure-vts-b0ayaqeeathch8as.canadaeast-01.azurewebsites.net/api/tasks';
 
-                // Charger les tâches depuis le backend
                 const loadTasks = async () => {
                     try {
                         const response = await fetch(API_URL);
@@ -106,34 +105,28 @@
                     }
                 };
 
-                // Ajouter une tâche
                 const addTask = async () => {
                     if (newTaskText.value.trim() === '') return;
-                    
                     const response = await fetch(API_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ text: newTaskText.value })
                     });
-                    
                     const newTask = await response.json();
                     tasks.value.push(newTask);
-                    newTaskText.value = ''; // On vide le champ
+                    newTaskText.value = '';
                 };
 
-                // Cocher/Décocher
                 const toggleTask = async (task) => {
-                    await fetch(`${API_URL}/${task.id}`, { method: 'PUT' });
+                    await fetch(`${API_URL}/${task._id}`, { method: 'PUT' });
                     task.completed = !task.completed;
                 };
 
-                // Supprimer
                 const deleteTask = async (id) => {
                     await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-                    tasks.value = tasks.value.filter(t => t.id !== id);
+                    tasks.value = tasks.value.filter(t => t._id !== id);
                 };
 
-                // On charge les tâches au démarrage de la page
                 onMounted(() => {
                     loadTasks();
                 });
