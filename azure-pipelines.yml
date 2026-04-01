@@ -19,4 +19,5 @@ steps:
     azureSubscription: 'SC_EXAM-AZURE'
     scriptType: 'ps'
     scriptLocation: 'inlineScript'
-    inlineScript: 'Compress-Archive -Path server.js, package.json, index.html -DestinationPath app.zip -Force; az webapp deploy --resource-group rg-tp-azure-exam --name backend-tp-azure-vts --src-path app.zip --type zip'
+    inlineScript: |
+      az webapp up --name backend-tp-azure-vts --resource-group rg-tp-azure-exam --runtime "NODE:20-lts"
